@@ -1,26 +1,19 @@
 # $Id$
 # Maintainer: Chupligin Sergey (NeoChapay) <neochapay@gmail.com>
 
-_host="git.sailfishos.org"
-_project=mer-core
-_basename=commhistory-daemon
-_branch=master
-
-pkgname=$_basename-git
-
+pkgname=commhistory-daemon-git
 pkgver=0.8.38.r0.g7e00f4a
-
-pkgrel=1
+pkgrel=3
 pkgdesc="Communications event history database daemon"
 arch=('x86_64' 'aarch64')
-url="https://$_host/$_project/$_basename#branch=$_branch"
+url="https://github.com/sailfishos/commhistory-daemon"
 license=('LGPLv2')
-depends=('qt5-base' 'libcommhistory-git' 'qt5-contacts-sqlite-extensions-git' 'qt5-mlite-git' 'qt5-mce-git' 'qt5-mlocale-git' 'telepathy-qt' 'libqofono-qt5' 'qt5-ngfd-git' 'mapplauncherd-qt-git' 'nemo-qml-plugin-contacts-git' 'nemo-qml-plugin-notifications-git' 'qt5-ofono-nemo-extensions-git')
+depends=('qt5-base' 'libcommhistory-git' 'qt5-contacts-sqlite-extensions-git' 'mlite' 'qt5-mce-git' 'qt5-mlocale-git' 'telepathy-qt' 'libqofono-qt5' 'qt5-ngfd-git' 'nemo-qml-plugin-contacts-git' 'nemo-qml-plugin-notifications-git' 'qt5-ofono-nemo-extensions-git')
 makedepends=('git' 'qt5-tools')
 provides=("${pkgname%-git}")
 conflicts=("${pkgname%-git}")
-source=("${pkgname}::git+${url}")
-md5sums=('SKIP')
+source=("${pkgname}::git+${url}" "commhistoryd.service")
+md5sums=('SKIP' 'SKIP')
 
 pkgver() {
   cd "${srcdir}/${pkgname}"
@@ -53,8 +46,10 @@ package() {
   cd "${srcdir}/${pkgname}"
   cd build
   make INSTALL_ROOT="${pkgdir}" install
-  mkdir -p ${pkgdir}/usr/share/mapplauncherd/privileges.d
-  install -m 644 -p ${srcdir}/${pkgname}/rpm/commhistory-daemon.privileges ${pkgdir}/usr/share/mapplauncherd/privileges.d
-    sed -i 's/pre-user-session.target/graphical-session-pre.target/;s/WantedBy=user-session.target/WantedBy=graphical-session.target/' "${pkgdir}/usr/lib/systemd/user/commhistoryd.service"
-
+#we use own service
+  rm -rf ${pkgdir}/usr/lib/systemd/user/commhistoryd.service
+  cp ${srcdir}/commhistoryd.service ${pkgdir}/usr/lib/systemd/user/commhistoryd.service
+  mkdir -p ${pkgdir}/usr/lib/systemd/user/graphical-session.target.wants/
+  ln -s ../commhistoryd.service ${pkgdir}/usr/lib/systemd/user/graphical-session.target.wants/
+  
 }
