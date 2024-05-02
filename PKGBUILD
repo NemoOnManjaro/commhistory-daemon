@@ -3,7 +3,7 @@
 
 pkgname=commhistory-daemon
 pkgver=0.8.44
-pkgrel=2
+pkgrel=3
 pkgdesc="Communications event history database daemon"
 arch=('x86_64' 'aarch64')
 url="https://github.com/sailfishos/commhistory-daemon"
@@ -11,7 +11,7 @@ license=('LGPLv2')
 depends=('qt5-base'
     'libcommhistory'
     'qtcontacts-sqlite'
-    'mlite'
+    'mlite6'
     'libmce-qt'
     'libmlocale'
     'telepathy-qt'
