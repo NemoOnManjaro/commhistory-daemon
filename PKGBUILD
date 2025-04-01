@@ -3,24 +3,23 @@
 
 pkgname=commhistory-daemon
 pkgver=0.8.44
-pkgrel=3
+pkgrel=2
 pkgdesc="Communications event history database daemon"
 arch=('x86_64' 'aarch64')
 url="https://github.com/sailfishos/commhistory-daemon"
 license=('LGPLv2')
-depends=('qt5-base'
+depends=('qt6-base'
     'libcommhistory'
     'qtcontacts-sqlite'
     'mlite6'
     'libmce-qt'
     'libmlocale'
-    'telepathy-qt'
-    'libqofono-qt5'
-    'libngf-qt'
+    'libqofono-qt6'
+    'libngf-qt6'
     'nemo-qml-plugin-contacts'
     'nemo-qml-plugin-notifications>=1.0.12'
     'libqofonoext')
-makedepends=('qt5-tools')
+makedepends=('qt6-tools' 'clang' 'python')
 source=("${url}/archive/refs/tags/$pkgver.tar.gz"
     "commhistoryd.service"
     "0001-revert_adjust_to_new_messages_bus_names.patch")
@@ -35,8 +34,8 @@ prepare() {
   #don't build tests
   sed -i 's/tests//' commhistory-daemon.pro
   #fixup include and libs
-  sed -i 's/# clock_gettime/INCLUDEPATH += \/usr\/include\/commhistory-qt5\/ \/usr\/include\/telepathy-qt5 \/usr\/include\/qofono-qt5\/ \/usr\/include\/contactcache-qt5 \/usr\/include\/qtcontacts-sqlite-qt5-extensions \/usr\/include\/qofonoext \/usr\/include\/mlocale5 \/usr\/include\/mlite5 \/usr\/include\/nemonotifications-qt5 \/usr\/include\/ngf-qt5 /' src/src.pro
-  sed -i 's/LIBS += -lrt/LIBS += -L\/usr\/lib -lrt -lngf-qt5 -lnemonotifications-qt5 -ltelepathy-qt5 -lcommhistory-qt5 -lmlite5 -lQt5DBus -lmlocale5 -lQt5Gui -lQt5Core -lqofono-qt5 -lqofonoext -lcontactcache-qt5 -pie -rdynamic /' src/src.pro
+  sed -i 's/# clock_gettime/INCLUDEPATH += \/usr\/include\/commhistory-qt6\/ \/usr\/include\/telepathy-qt6 \/usr\/include\/qofono-qt6\/ \/usr\/include\/contactcache-qt6 \/usr\/include\/qtcontacts-sqlite-qt6-extensions \/usr\/include\/qofonoext \/usr\/include\/mlocale6 \/usr\/include\/mlite6 \/usr\/include\/nemonotifications-qt6 \/usr\/include\/ngf-qt6 /' src/src.pro
+  sed -i 's/LIBS += -lrt/LIBS += -L\/usr\/lib -lrt -lngf-qt6 -lnemonotifications-qt6 -ltelepathy-qt6 -lcommhistory-qt6 -lmlite6 -lqt6DBus -lmlocale5 -lqt6Gui -lqt6Core -lqofono-qt6 -lqofonoext -lcontactcache-qt6 -pie -rdynamic /' src/src.pro
   patch -p1 --input="${srcdir}/0001-revert_adjust_to_new_messages_bus_names.patch"
 }
 
@@ -44,7 +43,7 @@ build() {
   cd $pkgname-$pkgver
   mkdir -p build
   cd build
-  qmake ..
+  qmake6 ..
   make
 }
 
